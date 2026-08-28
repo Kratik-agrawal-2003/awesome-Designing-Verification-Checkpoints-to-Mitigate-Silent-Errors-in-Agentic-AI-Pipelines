@@ -1,214 +1,411 @@
-# Awesome Verification Checkpoints for Agentic AI Pipelines
+# Awesome Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines
 
-A curated research repository focused on verification checkpoints for mitigating silent errors in agentic AI pipelines. This repository collects verified scholarly papers, datasets, tools, implementations, and learning resources related to reliability, evaluation, monitoring, verification, and error mitigation in agentic AI systems.
+A curated collection of research papers, datasets, tools, implementations, and learning resources related to **designing verification checkpoints to detect and mitigate silent errors in agentic AI pipelines**.
 
-The goal is to provide a reusable research resource for understanding how verification mechanisms can detect, localize, and reduce silent failures in multi-step AI agent workflows.
+The repository focuses on improving the reliability of AI agents by introducing verification mechanisms at important intermediate stages such as reasoning, evidence retrieval, tool use, state transitions, actions, and final outcomes.
+
+---
 
 ## Contents
 
 - [Overview](#overview)
 - [AI-Assisted Research Paper](#ai-assisted-research-paper)
-- [Citation Integrity Audit](#citation-integrity-audit)
-- [Survey and Review Papers](#survey-and-review-papers)
+- [Survey Papers](#survey-papers)
 - [Foundational Papers](#foundational-papers)
 - [Recent Research Papers](#recent-research-papers)
-- [Methods and Algorithms](#methods-and-algorithms)
-- [Applications and Benchmarks](#applications-and-benchmarks)
 - [Datasets](#datasets)
 - [Tools and Libraries](#tools-and-libraries)
 - [GitHub Implementations](#github-implementations)
-- [Tutorials and Learning Resources](#tutorials-and-learning-resources)
+- [Tutorials](#tutorials)
+- [Citation Integrity Audit](#citation-integrity-audit)
+- [Repository Structure](#repository-structure)
 - [License](#license)
 
 ---
 
 ## Overview
 
-Agentic AI systems are designed to perform tasks through multiple steps involving planning, reasoning, tool use, memory, decision-making, and interaction with external environments. Unlike a single-response language model, an agentic pipeline can produce intermediate actions and decisions that influence later stages of execution. This creates new opportunities for errors to propagate silently through the workflow.
+Agentic AI systems can perform multi-step reasoning, interact with external tools, retrieve information, modify environments, and execute long-horizon tasks.
 
-A silent error occurs when an incorrect intermediate result, tool call, reasoning step, or decision does not immediately trigger an obvious failure but instead affects subsequent stages. Such errors can be particularly difficult to detect because the final output may appear plausible even when the underlying process was incorrect.
+A major reliability problem occurs when an agent makes an incorrect intermediate decision but continues operating as if that decision were correct. Such **silent errors** may propagate through subsequent reasoning and actions, making the final failure difficult to diagnose.
 
-Verification checkpoints provide a systematic approach for monitoring agentic pipelines at important stages. A checkpoint can validate intermediate outputs, verify tool results, check constraints, evaluate evidence, detect inconsistencies, or determine whether an agent should continue, retry, or terminate. Effective checkpoint design therefore requires balancing reliability, computational cost, latency, and coverage.
+This repository studies the use of **verification checkpoints** at important boundaries in an agentic AI pipeline.
 
-This repository focuses on research directions including agent evaluation, process verification, factuality checking, uncertainty estimation, tool-use verification, automated monitoring, benchmark design, and reliable multi-step AI systems. The collected resources are intended to support further research into building agentic pipelines that are more observable, trustworthy, reproducible, and resistant to silent failures.
+The research paper associated with this repository proposes a layered verification architecture involving:
+
+1. **Input and intent verification**
+2. **State and evidence verification**
+3. **Process verification**
+4. **Action verification**
+5. **Outcome verification**
+
+The goal is to detect consequential errors as early as possible instead of relying only on final-output evaluation.
 
 ---
 
 ## AI-Assisted Research Paper
 
-### Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines
+The original research paper was generated using ChatGPT as part of the AI-assisted citation integrity laboratory.
 
-This research paper investigates how verification checkpoints can be incorporated into agentic AI pipelines to identify and mitigate silent errors during multi-step execution.
+### Topic
 
-The paper discusses the motivation for checkpoint-based verification, possible checkpoint locations, verification strategies, error propagation, and the challenges involved in evaluating reliable agentic systems.
+**Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines**
 
-**Paper:**  
-[View AI-Assisted Research Paper](paper/AI_Assisted_Research_Paper.pdf)
+### Paper Information
+
+- **Student:** Kratik Agrawal
+- **Roll Number:** MCL2026004
+- **Programme:** M.Tech (IT) CLISE
+- **Topic ID:** T10
+- **AI Tool:** ChatGPT
+- **Model:** GPT-5.6 Luna
+- **Date:** 20/08/2026
+
+The original AI-generated paper has been preserved as experimental evidence, following the laboratory requirement to preserve the original output before citation verification.
+
+**[View AI-Assisted Research Paper](paper/paper.pdf)**
 
 ---
 
-## Citation Integrity Audit
+## Survey Papers
 
-The scholarly references used in this repository are intended to be independently verified rather than accepted solely from AI-generated recommendations.
+Survey and overview papers provide broader context for evaluating LLM agents, reliability, verification, hallucination, and autonomous systems.
 
-The citation-integrity audit associated with the earlier research activity examines the accuracy and reliability of research claims and references.
+### Evaluation and Benchmarking of LLM Agents: A Survey
 
-**Citation Audit:**  
-[View Citation Integrity Audit](citation-audit/Citation_Integrity_Audit.pdf)
+**Authors:** Mahmoud Mohammadi, Yipeng Li, Jane Lo, Wendy Yip  
+**Year:** 2025
 
----
+Provides an overview of LLM-agent evaluation, including reliability, safety, datasets, benchmarks, metrics, and evaluation methodologies.
 
-## Survey and Review Papers
+[DOI](https://doi.org/10.1145/3711896.3736570)
 
-Research surveys and review papers providing broad perspectives on agentic AI, AI reliability, evaluation, reasoning, and verification.
+### Additional Survey and Evaluation Literature
 
-- **Paper 1** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+See the complete curated collection in:
 
-- **Paper 2** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+**[references/references.md](references/references.md)**
 
 ---
 
 ## Foundational Papers
 
-Important foundational research related to language models, reasoning, verification, evaluation, and reliable AI systems.
+These papers provide important foundations for reasoning, verification, tool use, reflection, and agentic AI.
 
-- **Paper 1** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+### Constitutional AI: Harmlessness from AI Feedback
 
-- **Paper 2** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+**Bai et al. (2022)**
+
+Introduces Constitutional AI and AI-assisted critique and revision mechanisms.
+
+[Paper](https://arxiv.org/abs/2212.08073)
+
+### Chain-of-Thought Prompting Elicits Reasoning in Large Language Models
+
+**Wei et al. (2022)**
+
+Established chain-of-thought prompting as an important method for eliciting multi-step reasoning.
+
+[Paper](https://arxiv.org/abs/2201.11903)
+
+### ReAct: Synergizing Reasoning and Acting in Language Models
+
+**Yao et al. (2023)**
+
+Introduces an approach that interleaves reasoning and actions, providing an important foundation for studying verification between reasoning and tool interactions.
+
+[Paper](https://arxiv.org/abs/2210.03629)
+
+### Toolformer: Language Models Can Teach Themselves to Use Tools
+
+**Schick et al. (2023)**
+
+Studies how language models can learn to interact with external tools.
+
+[Paper](https://arxiv.org/abs/2302.04761)
+
+### Reflexion: Language Agents with Verbal Reinforcement Learning
+
+**Shinn et al. (2023)**
+
+Introduces reflection mechanisms that allow agents to use feedback from previous attempts.
+
+[Paper](https://arxiv.org/abs/2303.11366)
 
 ---
 
 ## Recent Research Papers
 
-Recent research addressing agentic systems, AI agents, verification, monitoring, evaluation, and error mitigation.
+Recent work is particularly important for understanding hallucination detection, process supervision, agent evaluation, and reliability.
 
-- **Paper 1** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+### Training Verifiers to Solve Math Word Problems
 
-- **Paper 2** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of relevance.
+**Cobbe et al. (2021)**
+
+Studies separate verifier models for evaluating candidate mathematical solutions.
+
+[Paper](https://arxiv.org/abs/2110.14168)
+
+### Let's Verify Step by Step
+
+**Lightman et al. (2023)**
+
+Studies process supervision and verification of individual reasoning steps.
+
+[Paper](https://arxiv.org/abs/2305.20050)
+
+### SelfCheckGPT
+
+**Manakul, Liusie & Gales (2023)**
+
+Introduces a black-box approach for detecting hallucinations through consistency between sampled responses.
+
+[Paper](https://aclanthology.org/2023.emnlp-main.557/)
+
+### FActScore
+
+**Min et al. (2023)**
+
+Provides fine-grained evaluation of factual precision in long-form generated text.
+
+[Paper](https://aclanthology.org/2023.emnlp-main.741/)
+
+### AgentBench
+
+**Liu et al. (2024)**
+
+Provides a benchmark for evaluating LLMs as agents across multiple environments.
+
+[Paper](https://arxiv.org/abs/2308.03688)
+
+### RAGTruth
+
+**Wu et al. (2024)**
+
+Provides a hallucination corpus for retrieval-augmented generation.
+
+[Paper](https://arxiv.org/abs/2401.00396)
+
+### SWE-bench
+
+**Jimenez et al. (2024)**
+
+Evaluates whether language-model agents can resolve real-world software engineering issues.
+
+[Paper](https://arxiv.org/abs/2310.06770)
+
+### WebArena
+
+**Zhou et al. (2024)**
+
+Provides a realistic interactive environment for evaluating autonomous web agents.
+
+[Project](https://github.com/web-arena-x/webarena)
+
+### Too Consistent to Detect
+
+**Tan et al. (2025)**
+
+Investigates limitations of consistency-based hallucination detection and demonstrates that consistency does not necessarily imply correctness.
+
+[Paper](https://aclanthology.org/2025.emnlp-main.238/)
+
+### Do LLMs Catch Their Own Mistakes?
+
+**Liu et al. (2026)**
+
+Studies whether LLMs can detect and correct their own tool-use mistakes.
+
+[Paper](https://aclanthology.org/2026.findings-acl.86/)
+
+### ReliabilityBench
+
+**Gupta (2026)**
+
+Investigates LLM-agent reliability under production-like stress conditions, including repeated execution and tool/API failures.
+
+[Paper](https://arxiv.org/abs/2601.06112)
 
 ---
 
-## Methods and Algorithms
+## Complete Reference Collection
 
-Research focusing on techniques for verification, monitoring, evaluation, self-correction, uncertainty estimation, process supervision, and error detection.
+The repository contains a larger curated collection of scholarly literature covering:
 
-- **Method 1** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of the method and its relevance.
+- Agent evaluation
+- Process supervision
+- Hallucination detection
+- Factuality
+- Retrieval-augmented generation
+- Reasoning
+- Tool use
+- Self-consistency
+- Reflection
+- Software agents
+- Web agents
+- Agent reliability
 
-- **Method 2** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of the method and its relevance.
-
----
-
-## Applications and Benchmarks
-
-Research applying verification and evaluation techniques to practical agentic AI tasks and benchmark environments.
-
-- **Application / Benchmark 1** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of the application or benchmark.
-
-- **Application / Benchmark 2** — Authors, Year  
-  [Paper / DOI](LINK)  
-  Brief explanation of the application or benchmark.
+**[View complete references](references/references.md)**
 
 ---
 
 ## Datasets
 
-Datasets relevant to evaluating AI agents, reasoning, factuality, tool use, reliability, and error detection.
+The following datasets and benchmarks are relevant to verification and agent reliability research.
 
-Detailed dataset information is maintained in:
+### RAGTruth
 
-[View Dataset Collection](datasets/datasets.md)
+A hallucination corpus for studying unsupported or contradictory claims in retrieval-augmented generation.
+
+- **Area:** RAG / hallucination detection
+- **Use:** Evidence and claim verification
+- **Repository:** [RAGTruth](https://github.com/ParticleMedia/RAGTruth)
+- **Paper:** [RAGTruth](https://arxiv.org/abs/2401.00396)
+
+### SWE-bench
+
+A benchmark containing real-world software engineering issues used to evaluate coding agents.
+
+- **Area:** Software agents
+- **Use:** Execution-based verification
+- **Repository:** [SWE-bench](https://github.com/SWE-bench/SWE-bench)
+- **Paper:** [SWE-bench](https://arxiv.org/abs/2310.06770)
+
+### WebArena
+
+An interactive benchmark for evaluating autonomous web agents on realistic tasks.
+
+- **Area:** Web agents
+- **Use:** Tool-use, state-transition, and long-horizon verification
+- **Repository:** [WebArena](https://github.com/web-arena-x/webarena)
+- **Paper:** [WebArena](https://arxiv.org/abs/2307.13854)
+
+**[View detailed dataset information](datasets/datasets.md)**
 
 ---
 
 ## Tools and Libraries
 
-Software libraries and frameworks useful for developing, evaluating, monitoring, and experimenting with agentic AI systems.
+The repository collects tools that can support agent development, evaluation, tracing, experimentation, and verification.
 
-Detailed information is maintained in:
+Planned categories include:
 
-[View Tools and Libraries](tools/tools.md)
+- Agent frameworks
+- Evaluation frameworks
+- LLM observability
+- Experiment tracking
+- Retrieval and RAG evaluation
+- Automated testing
+
+**[View tools and libraries](tools/tools.md)**
 
 ---
 
 ## GitHub Implementations
 
-Open-source implementations related to agentic AI, evaluation, verification, monitoring, and reliable AI pipelines.
+Open-source implementations provide practical examples of agent architectures, benchmarks, evaluation systems, and verification techniques.
 
-Detailed information is maintained in:
+The repository will contain at least five relevant implementations covering areas such as:
 
-[View GitHub Implementations](implementations/github-repositories.md)
+- Agent orchestration
+- Web agents
+- SWE-bench evaluation
+- RAG evaluation
+- LLM-agent benchmarking
+- Reflection and self-correction
 
----
-
-## Tutorials and Learning Resources
-
-Curated learning materials including official documentation, lectures, tutorials, benchmarks, and educational resources.
-
-- Resource 1 — Brief description.
-- Resource 2 — Brief description.
-- Resource 3 — Brief description.
-- Resource 4 — Brief description.
-- Resource 5 — Brief description.
+**[View GitHub implementations](implementations/github-repositories.md)**
 
 ---
 
-## Research Verification Policy
+## Tutorials
 
-Every scholarly resource added to this repository should be checked for:
+Learning resources help researchers understand the practical implementation of agentic systems and verification mechanisms.
 
-- Correct paper title
-- Correct authors
-- Correct publication year
-- Correct journal or conference
-- DOI, where available
-- Existence of the paper
-- Correct correspondence between the resource and its link
+Topics include:
 
-AI tools may be used to discover candidate resources, but references should be independently verified before inclusion.
+- Building LLM agents
+- Tool calling
+- Retrieval-augmented generation
+- Agent evaluation
+- Hallucination detection
+- LLM observability
+- Automated testing
+- Multi-step agent workflows
+
+A curated list of at least five learning resources will be maintained in the repository.
+
+**[View tutorials and learning resources](tutorials/tutorials.md)**
 
 ---
 
-## Repository Structure
+## Citation Integrity Audit
+
+The original research paper was accompanied by a systematic citation-integrity audit.
+
+The audit examined:
+
+- Citation authenticity
+- Metadata accuracy
+- Author information
+- Publication year
+- Venue
+- DOI/arXiv identifiers
+- Identifier-to-publication correspondence
+- Pre-verification plausibility
+- Citation authenticity classifications
+
+The original audit reported:
+
+| Measure | Result |
+|---|---:|
+| Total references | 17 |
+| References deeply audited | 10 |
+| Verified (A) | 9 |
+| Wrong metadata (B) | 0 |
+| Frankenstein citations (C) | 1 |
+| Fabricated (D) | 0 |
+| Identifier mismatch (E) | 0 |
+| Authenticity Score | 92.5/100 |
+| Prediction Accuracy | 90% |
+
+The audit emphasizes that professional-looking citations should not automatically be considered trustworthy and that citations should be checked against authoritative scholarly sources.
+
+**[View Citation Integrity Audit](citation-audit/citation_audit.pdf)**
+
+---
+
+## Verification Checkpoint Architecture
+
+The central research idea can be represented as a layered verification pipeline:
 
 ```text
-awesome-verification-checkpoints-agentic-ai/
-│
-├── README.md
-│
-├── paper/
-│   └── AI_Assisted_Research_Paper.pdf
-│
-├── citation-audit/
-│   └── Citation_Integrity_Audit.pdf
-│
-├── references/
-│   └── references.md
-│
-├── datasets/
-│   └── datasets.md
-│
-├── tools/
-│   └── tools.md
-│
-├── implementations/
-│   └── github-repositories.md
-│
-└── LICENSE
+User Goal
+   │
+   ▼
+┌─────────────────────────┐
+│ 1. Intent Verification  │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 2. Evidence Verification│
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 3. Process Verification │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 4. Action Verification  │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 5. Outcome Verification │
+└────────────┬────────────┘
+             │
+             ▼
+        Final State
