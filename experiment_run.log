@@ -1,0 +1,78 @@
+{
+  "python": "3.13.5",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "elapsed_wall_seconds": 3.21,
+  "development_sample_count": 5000,
+  "test_sample_count": 15000,
+  "development_only_global_selection": [
+    2,
+    4,
+    6
+  ],
+  "development_only_profile_selection": {
+    "retrieval_heavy": [
+      2,
+      4,
+      6
+    ],
+    "execution_heavy": [
+      2,
+      4,
+      6
+    ]
+  },
+  "development_top5_global_unsafe_aborted_cost_positions": [
+    [
+      322,
+      265,
+      34947.5,
+      [
+        2,
+        4,
+        6
+      ]
+    ],
+    [
+      431,
+      255,
+      36002.5,
+      [
+        1,
+        3,
+        5
+      ]
+    ],
+    [
+      443,
+      252,
+      35142.5,
+      [
+        2,
+        4,
+        5
+      ]
+    ],
+    [
+      448,
+      248,
+      35475.0,
+      [
+        2,
+        3,
+        5
+      ]
+    ],
+    [
+      488,
+      253,
+      33420.0,
+      [
+        3,
+        4,
+        6
+      ]
+    ]
+  ],
+  "test_case_ids_start": "test-101-00000",
+  "test_case_ids_end": "test-505-02999"
+}

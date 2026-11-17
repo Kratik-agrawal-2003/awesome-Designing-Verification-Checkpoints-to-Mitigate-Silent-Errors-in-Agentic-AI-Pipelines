@@ -1,0 +1,178 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/ieeetran/IEEEtran.cls
+Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+-- This is a 10 point document.
+)
+** ATTENTION: Overriding command lockouts (line 2).
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/preprint/balance.sty) (./numbers.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./main.aux)
+-- Lines per column: 56 (exact).
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(./main.out) (./main.out)
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+[2]
+
+Underfull \hbox (badness 3364) in paragraph at lines 105--106
+\T1/ptm/m/n/10 plots and con-sole logs. The re-pro-ducibil-ity com-mands
+
+Underfull \hbox (badness 2799) in paragraph at lines 105--106
+\T1/ptm/m/n/10 are `python -m unittest dis-cover -s tests -v', `python
+
+[3]
+
+[4 <./figures/unsafe_outcomes.pdf> <./figures/routing_sensitivity.pdf>]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+
+Underfull \vbox (badness 1087) has occurred while \output is active
+[5 <./figures/stage_failure_analysis.pdf> <./figures/cost_tradeoff.pdf>]
+
+[6]
+Underfull \hbox (badness 1845) in paragraph at lines 218--219
+\T1/ptm/m/n/8 Er-rors in Agen-tic AI Pipelines,'' un-pub-lished course manuscri
+pt,
+
+Underfull \hbox (badness 2698) in paragraph at lines 219--220
+\T1/ptm/m/n/8 Er-rors in Agen-tic AI Pipelines,'' prior course lit-er-a-ture re
+-view,
+
+Underfull \hbox (badness 1939) in paragraph at lines 221--222
+\T1/ptm/m/n/8 [On-line]. Avail-able: []$https : / / proceedings . iclr . cc / p
+aper _ ^^\les / paper / 2024 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 222--223
+[]\T1/ptm/m/n/8 S. Zhou \T1/ptm/m/it/8 et al.\T1/ptm/m/n/8 , ``We-bArena: A Re-
+al-is-tic Web En-vi-ron-ment
+
+Underfull \hbox (badness 7273) in paragraph at lines 222--223
+\T1/ptm/m/n/8 for Build-ing Au-tonomous Agents,'' in \T1/ptm/m/it/8 ICLR\T1/ptm
+/m/n/8 , 2024. [On-line].
+
+Underfull \hbox (badness 10000) in paragraph at lines 222--223
+\T1/ptm/m/n/8 Avail-able: []$https : / / proceedings . iclr . cc / paper _ ^^\l
+es / paper / 2024 / hash /
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--225
+[]\T1/ptm/m/n/8 Y. Ruan \T1/ptm/m/it/8 et al.\T1/ptm/m/n/8 , ``Iden-ti-fy-ing t
+he Risks of LM Agents
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--225
+\T1/ptm/m/n/8 with an LM-Emulated Sand-box,'' in \T1/ptm/m/it/8 ICLR\T1/ptm/m/n
+/8 , 2024. [On-line].
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--225
+\T1/ptm/m/n/8 Avail-able: []$https : / / proceedings . iclr . cc / paper _ ^^\l
+es / paper / 2024 / hash /
+
+Underfull \hbox (badness 10000) in paragraph at lines 225--226
+[]\T1/ptm/m/n/8 C. E. Jimenez \T1/ptm/m/it/8 et al.\T1/ptm/m/n/8 , ``SWE-bench:
+ Can Lan-guage Mod-els
+
+Underfull \hbox (badness 4995) in paragraph at lines 225--226
+\T1/ptm/m/n/8 Re-solve Real-world Github Is-sues?'' in \T1/ptm/m/it/8 ICLR\T1/p
+tm/m/n/8 , 2024. [On-line].
+
+Underfull \hbox (badness 10000) in paragraph at lines 225--226
+\T1/ptm/m/n/8 Avail-able: []$https : / / proceedings . iclr . cc / paper _ ^^\l
+es / paper / 2024 / hash /
+
+Underfull \hbox (badness 3148) in paragraph at lines 226--227
+[]\T1/ptm/m/n/8 H. Tan \T1/ptm/m/it/8 et al.\T1/ptm/m/n/8 , ``Too Con-sis-tent 
+to De-tect: A Study of Self-
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+
+
+[7] (./main.aux) )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
+w/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (7 pages, 260354 bytes).
+Transcript written on main.log.

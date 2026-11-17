@@ -1,0 +1,10 @@
+test_clean_case_no_false_alarm (test_simulator.TestSimulator.test_clean_case_no_false_alarm) ... ok
+test_deadline_and_repair_abort (test_simulator.TestSimulator.test_deadline_and_repair_abort) ... ok
+test_reproducibility_and_optimizer (test_simulator.TestSimulator.test_reproducibility_and_optimizer) ... ok
+test_silent_faults_preserve_schema_and_become_wrong (test_simulator.TestSimulator.test_silent_faults_preserve_schema_and_become_wrong) ... ok
+test_verifier_scope_independence (test_simulator.TestSimulator.test_verifier_scope_independence) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.008s
+
+OK

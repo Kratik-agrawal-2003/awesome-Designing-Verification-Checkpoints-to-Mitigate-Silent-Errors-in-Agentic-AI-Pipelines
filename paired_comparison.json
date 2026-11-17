@@ -1,0 +1,29 @@
+[
+  {
+    "contrast": "periodic minus profile_adaptive",
+    "delta_unsafe_pp": 2.927,
+    "paired_bootstrap_95pct_pp": [
+      2.34,
+      3.5
+    ],
+    "resamples": 1200
+  },
+  {
+    "contrast": "global_risk minus profile_adaptive",
+    "delta_unsafe_pp": 0.0,
+    "paired_bootstrap_95pct_pp": [
+      0.0,
+      0.0
+    ],
+    "resamples": 1200
+  },
+  {
+    "contrast": "periodic minus global_risk",
+    "delta_unsafe_pp": 2.927,
+    "paired_bootstrap_95pct_pp": [
+      2.34,
+      3.5
+    ],
+    "resamples": 1200
+  }
+]

@@ -1,0 +1,15 @@
+fault_stage,method,n,unsafe_rate
+0,global_risk,458,0.7008733624454149
+0,periodic,458,0.12663755458515283
+1,global_risk,531,0.1393596986817326
+1,periodic,531,0.0
+2,global_risk,2262,0.0
+2,periodic,2262,0.14146772767462423
+3,global_risk,1498,0.1375166889185581
+3,periodic,1498,0.0
+4,global_risk,1887,0.0
+4,periodic,1887,0.14202437731849496
+5,global_risk,1694,0.15407319952774498
+5,periodic,1694,0.0
+6,global_risk,655,0.0
+6,periodic,655,1.0

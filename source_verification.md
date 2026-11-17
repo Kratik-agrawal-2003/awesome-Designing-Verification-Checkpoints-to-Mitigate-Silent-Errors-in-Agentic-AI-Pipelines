@@ -1,0 +1,13 @@
+# Verification of neighboring original publications
+
+Below, titles and venue links were checked on official organizer/publisher sites on 18 Nov 2026. These sources motivate the problem; **none** provides measured data for this custom simulation. Citations are included in `paper/references.bib`. The original surveys remain the primary source for the exact stated research gaps.
+
+1. Liu et al. **AgentBench: Evaluating LLMs as Agents**, ICLR 2024. Official publication: https://proceedings.iclr.cc/paper_files/paper/2024/hash/e9df36b21ff4ee211a8b71ee8b7e9f57-Abstract-Conference.html . Evaluates agents over eight interactive environments; does not define our checkpoint-placement simulator.
+2. Lightman et al. **Let's Verify Step by Step**, ICLR 2024. Official publication: https://proceedings.iclr.cc/paper_files/paper/2024/hash/aca97732e30bcf1303bc22ac3924fd16-Abstract-Conference.html . Provides process-supervision background, not a checkpoint simulator baseline.
+3. Ruan et al. **Identifying the Risks of LM Agents with an LM-Emulated Sandbox**, ICLR 2024. Official publication: https://proceedings.iclr.cc/paper_files/paper/2024/hash/7274ed909a312d4d869cc328ad1c5f04-Abstract-Conference.html . ToolEmu uses an LLM-based emulator, which is NOT implemented here.
+4. Tan et al. **Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs**, EMNLP 2025. Publisher: https://aclanthology.org/2025.emnlp-main.238/ . Indicates related concerns about agreement-based error checks; our simulator's heterogeneous validators are rule/evidence based, not sampled LLMs.
+5. Yao et al. **ReAct: Synergizing Reasoning and Acting in Language Models**, ICLR 2023. Official manuscript: https://openreview.net/pdf?id=WE_vluYUL-X . Relevant example of interleaved reasoning and acting, not implemented here.
+6. Zhou et al. **WebArena: A Realistic Web Environment for Building Autonomous Agents**, ICLR 2024. Official publication: https://proceedings.iclr.cc/paper_files/paper/2024/hash/4410c0711e9154a7a2d26f9b3816d1ef-Abstract-Conference.html . Realistic end-task benchmark, distinct from our synthetic design.
+7. Jimenez et al. **SWE-bench: Can Language Models Resolve Real-world Github Issues?**, ICLR 2024. Official publication: https://proceedings.iclr.cc/paper_files/paper/2024/hash/edac78c3e300629acfe6cbe9ca88fb84-Abstract-Conference.html . Outcome-level executable task evaluation, not a direct comparator.
+
+**Unverified:** exhaustive literature novelty, any exact match between our synthetic parameters and actual deployment fault probabilities; no real source data were downloaded or reanalyzed.

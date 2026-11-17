@@ -1,0 +1,228 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx,booktabs,array,multirow}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{balance}
+\input{numbers.tex}
+\newcommand{\sys}{\textsc{CheckSim}}
+\newcommand{\fault}{\mathcal{F}}
+\title{Risk-Aware Verification Checkpoint Placement for Silent-Error Containment: A Controlled Synthetic Agent-Pipeline Study}
+\author{\IEEEauthorblockN{Kratik Agrawal}
+\IEEEauthorblockA{MCL2026004\\AI Tools for Research\\India}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Tool-using agent pipelines may pass syntactically valid but semantically incorrect intermediate states to later actions. The earlier survey \emph{Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines} proposed distributed checks but did not measure placement strategies. This implementation-based study investigates the narrower question of how three verification checkpoints should be allocated in a controlled seven-stage synthetic pipeline. We build a transparent Python simulator that generates valid task states, injects at most one semantic fault, assigns an abstract consequence deadline, and records detection, safe aborts, recovery and checking cost. Using 5,000 development scenarios to select policies, we evaluate seven matched strategies on 15,000 separate scenarios across five seeds. The periodic three-check baseline has an unsafe-outcome rate of \resPeriodicUnsafe\%, whereas development-optimized placement gives \resGlobalRiskUnsafe\%, a paired decrease of \resPairedDelta{} percentage points (95\% paired case-bootstrap interval \resPairedLo--\resPairedHi{} points). Context-specific optimization selects the same positions as global optimization in both profiles and shows \emph{no additional advantage}. Removing either deterministic verifier sharply weakens detection. These are genuine executed \emph{simulation} results, not an evaluation of live language-model agents: trusted synthetic reference data, fixed fault distributions, one-fault episodes and arbitrary cost units limit external validity. The contribution is a reproducible controlled comparison and an explicit negative result about context adaptation under this setup.
+\end{abstract}
+\begin{IEEEkeywords}
+agentic AI, silent error, verification checkpoint, fault injection, risk-aware placement, system reliability, controlled simulation
+\end{IEEEkeywords}
+
+\section{Introduction}
+A tool-using agent may appear to complete a task because every tool call returned a valid message, even though a claim, retrieved item or proposed action violates the user's actual objective. Conventional software signals such as successful API responses, parsable JSON or terminated control flow do not establish semantic correctness. This distinction becomes important when an incorrect intermediate state is consumed by later stages rather than reported immediately. Work on interactive language-model agents, including ReAct \cite{yao2023react}, illustrates the multi-step structure; AgentBench and WebArena \cite{liu2024agentbench,zhou2024webarena} address end-to-end performance in complex environments.
+
+The source research paper and associated review supplied for this course \cite{agrawal2026survey,agrawal2026review} argue that verification checkpoints should operate at the boundaries where evidence is consumed, assumptions change and consequential actions occur. Their Section~9 identifies adaptive placement, heterogeneous checks, risk sensitivity and silent-error benchmarking as future directions. However, a conceptual design does not tell a system engineer whether a limited verification budget should be spent uniformly or concentrated at high-risk locations. A comparison requires explicit error definitions, observed failures, a common test set and an honest account of the costs of checking.
+
+This paper fills \emph{one narrow experimental gap} within that broader agenda. We do not reproduce a published checkpoint algorithm or attempt to train a large language model. Instead we implement a controllable seven-stage pipeline with injected semantic faults and study a small number of placement and verification policies. This choice separates the system-design question from confounds due to model selection, hosted APIs and unreproducible prompt behavior. The benchmark is deliberately simple enough that a second student can examine its complete source code, reproduce every reported count and challenge its assumptions.
+
+The paper makes three course-level contributions. First, it provides an executable fault-injection apparatus and trial-level logs for error detection, unsafe outcomes and recovery rather than only final task accuracy. Second, it compares two operational baselines---a periodic schedule and a final-only gate---against development-selected global and context-specific schedules, under matched scenarios. Third, it isolates the coverage of deterministic rule and evidence checks, and reports a negative result when per-context scheduling does not improve beyond the global choice. We explicitly avoid presenting these observations as claims about real LLM safety or publication-level method novelty.
+
+\section{Background and Connection to the Review}
+\subsection{Intermediate verification versus terminal scoring}
+The prior survey defines a checkpoint as a boundary that tests a state against a specification and chooses whether to continue, repair, retry or escalate. This differs from merely asking the agent to announce that it has completed a task. Process supervision work by Lightman \emph{et al.} \cite{lightman2024verify} demonstrates that intermediate feedback can be meaningful for mathematical reasoning, but does not directly solve checkpoint allocation in arbitrary tool pipelines. We use its conceptual lesson---evaluate before the error spreads---without claiming to reproduce its model or result.
+
+\subsection{Benchmarks and error discovery}
+AgentBench \cite{liu2024agentbench} and WebArena \cite{zhou2024webarena} investigate agent tasks under interacting environments. ToolEmu \cite{ruan2024toolemu} uses language-model-based simulation for risk analysis, while SWE-bench \cite{jimenez2024swe} uses executable tests to evaluate generated patches. Their tasks and measured metrics are not interchangeable with the synthetic checkpoint simulator developed here. Our system injects an exact, known point of divergence and logs containment before an abstract deadline. This makes causal attribution straightforward in the single-fault setting, but it also makes the exercise less realistic than those agent benchmarks.
+
+\subsection{Verifier independence}
+The original survey argues for heterogeneous verification rather than repeated reviews by similar models. Tan \emph{et al.} \cite{tan2025consistent} show why agreement across model generations may miss consistent errors. We implement a narrower laboratory analogy: one checker evaluates formal task constraints; the other evaluates synthetic catalog and provenance fields. These validators access different features of the task state, not different language models. Under the explicitly idealized trusted reference data, they are error-free on their respective feature families. This is a controlled coverage experiment, \emph{not} evidence that practical rule engines or retrieval sources are infallible.
+
+\subsection{Research-gap selection}
+The supplied survey's Section~9.1 presents checkpoint placement as an optimization problem, Section~9.2 argues for risk-sensitive verification, Section~9.3 motivates heterogeneous mechanisms, and Section~9.6 asks for detection and containment metrics \cite{agrawal2026survey}. Those are research directions stated by the source author, not previously demonstrated empirical results. We select checkpoint placement because it is directly testable using a compact reproducible implementation, whereas full causal localization in a multi-agent application would require a larger independently annotated environment. The detailed gap matrix distinguishes source-derived limitations, inferences and still-unverified novelty claims.
+
+\section{Research Questions and Hypotheses}
+The experiment asks three measurable questions.
+
+\textbf{RQ1 (placement):} At an equal budget of three checkpoint positions in a seven-stage pipeline, does development-optimized placement yield fewer unsafe terminal outcomes than a periodic schedule on previously unseen synthetic cases?
+
+\textbf{RQ2 (context):} Does selecting a three-check schedule separately for two observable risk contexts improve over selecting one global schedule? This test must permit a null finding; it would be invalid to hand-design the data after seeing the held-out results to make adaptive placement appear successful.
+
+\textbf{RQ3 (verification diversity):} What happens when the same selected positions use only a rule checker or only an evidence checker, instead of their heterogeneous conjunction? We measure the trade-off between semantic coverage and abstract checking cost rather than assuming that all extra checks are beneficial.
+
+Our pre-experiment expectations were that optimization could improve upon an uncalibrated schedule, context could add value only if it changes the best positions, and diverse checkers could cover complementary fault types. We do not require those expectations to be confirmed. The primary metric is the fraction of all held-out cases ending in an abstract unsafe outcome, lower being better. Secondary measures are successful completion, safe aborts, conditional fault detection, number of checks, checking cost and stage lag until detection.
+
+\section{Controlled Benchmark Construction}
+\subsection{Pipeline and task specification}
+A synthetic workflow is represented by seven ordered stages: intent ($s_0$), plan ($s_1$), retrieval ($s_2$), evidence ($s_3$), tool observation ($s_4$), state update ($s_5$) and pre-action ($s_6$). A valid order state contains a SKU, price, requested quantity, permitted destination, authorization flag, evidence/provenance token and stock quantity. These are small structured Python objects; there is no purchase API and no language-model invocation. A ground-truth intent assigns a budget and requested quantity. The initial state satisfies all constraints.
+
+At most one semantic corruption is applied per faulty case. Seven fault families alter one state field: incompatible SKU, over-budget price, wrong quantity, invalid destination, revoked permission, unsupported evidence token or unavailable stock. A mutation preserves the field names and data types, so a schema-only parser would not detect it. This explicitly models the distinction between syntactic validity and semantic failure. The permitted fault types depend on stage, as recorded in the source code and frozen protocol. The overall injection probability is 0.60. Cases without an injection serve as negative controls.
+
+Each episode is also tagged with one of two observable contexts, \emph{retrieval-heavy} or \emph{execution-heavy}. These labels determine a fixed distribution over fault stages. For retrieval-heavy tasks, stages 2 and 3 have probabilities 0.43 and 0.25; for execution-heavy tasks, stages 4 and 5 have probabilities 0.35 and 0.32. The remaining stage probabilities and the exact distribution are in `configs/frozen\_protocol.json'. These probabilities are \emph{assumptions chosen for experimental control}, not parameters estimated from real deployed agents.
+
+\subsection{Propagation deadline and outcome definitions}
+A corruption at stage $j$ is assigned a deadline $d=\min(6,j+h)$, where $h\in\{0,1,2\}$ is drawn using fixed probabilities $(0.15,0.55,0.30)$. A verifier at a stage in $[j,d]$ can catch the error before its abstract side effect. If the corrupted state reaches the deadline without successful detection, the simulation records an \emph{unsafe terminal outcome}; no actual irreversible action occurs. A check at a stage runs before the deadline test at that same stage, so the boundary is unambiguous.
+
+On detection, an externally predetermined Bernoulli outcome controls repair. Repair succeeds with probability 0.90, restoring the clean state and allowing subsequent processing. Otherwise the run safely aborts and does not complete its task. Every episode therefore has exactly one terminal label: successful completion, unsafe outcome or safe abort. A legitimate safe abort should not be conflated with task success. This separation prevents an apparently perfect containment rate from disguising an inability to complete tasks.
+
+\subsection{Verifiers and scope}
+The rule-based checker verifies price against budget, quantity against requested quantity, destination policy and permission. The evidence-based checker verifies approved SKU, provenance token and stock sufficiency against trusted synthetic information. A heterogeneous checkpoint executes both checks and blocks when either fails:
+\begin{equation}
+V_{\mathrm{het}}(x)=V_{\mathrm{rule}}(x)\land V_{\mathrm{evidence}}(x).
+\end{equation}
+Rule and evidence costs are set to 1.0 and 1.5 units per call, respectively; a heterogeneous checkpoint therefore costs 2.5. The assigned costs intentionally distinguish cheap constraint checks from a more expensive independent evidence check. They are not measurements of CPU, tokens or latency. In this model, soundness is guaranteed only because the test designer knows the synthetic ground truth. The comparison explores which faults each checker can express, rather than guessing an LLM verifier's accuracy.
+
+\section{Methods and Baselines}
+\subsection{Compared policies}
+Let $\mathcal{C}\subseteq\{0,\ldots,6\}$ denote a checkpoint set. A policy specifies both its set $\mathcal{C}$ and its verifier type. The controls are \emph{no checkpoints} ($\varnothing$), \emph{final only} ($\{6\}$), and \emph{periodic} ($\{1,3,5\}$). Final-only uses fewer checks and must be interpreted as a cheaper control, not an equal-budget competitor.
+
+The \emph{global risk} policy chooses one three-stage set through exhaustive enumeration of $\binom{7}{3}=35$ possibilities on the development data. The \emph{profile-adaptive} policy performs the same search separately for each public risk context and routes test scenarios to the matching schedule. Neither optimizer sees the held-out scenarios. All fixed and selected three-stage policies use the heterogeneous verifier in the primary comparison. For ablation, we retain the profile-adaptive positions but replace the heterogeneous check with rule-only or evidence-only checks.
+
+The selection rule is lexicographic: minimize the development unsafe count first, then safe-abort count, then total abstract verification cost, then stage tuple. This explicit criterion makes the policy search deterministic and avoids choosing favorable held-out numbers post hoc. The generated test IDs, fault placements, deadlines and pre-sampled repair variables are identical across policies, enabling case-paired comparisons. The appendix-level project documentation lists all method names and frozen parameters.
+
+\subsection{Evaluation metrics}
+For $N$ test episodes with terminal outcomes $u_i$ (unsafe), $q_i$ (task succeeded), and $a_i$ (safely aborted), define
+\begin{equation}
+\widehat{U}=\frac1N\sum_i u_i,\quad
+\widehat{Q}=\frac1N\sum_i q_i,\quad
+\widehat{A}=\frac1N\sum_i a_i,
+\end{equation}
+with $u_i+q_i+a_i=1$ for every episode. Among injected-fault episodes $\mathcal{F}$, the fraction caught before their deadlines is
+\begin{equation}
+\widehat{D}=\frac{\sum_{i\in\mathcal{F}}\mathbb{1}[\mathrm{detected}_i]}{|\mathcal{F}|}.
+\end{equation}
+We also report per-case accumulated checking units $\bar C$, executed check count and mean lag between fault injection and detection. Since a failing episode can terminate before later scheduled checkpoints, actual executed checking cost can depend on outcome, not merely on the nominal policy's budget. This is a feature of the stated simulation convention and a limitation when interpreting costs.
+
+To characterize paired sampling variability, we independently resample $N$ case IDs with replacement 1,200 times and calculate the difference in unsafe indicators between two strategies on each resample. We report the 2.5th and 97.5th percentiles of this paired bootstrap distribution. These intervals are \emph{conditional on the selected generator}, not confidence bounds on future LLM reliability, on an unknown real-world task distribution, or on the assumption of independence between stages.
+
+\section{Experimental Protocol and Verification}
+The protocol was specified before held-out evaluation. We generate 5,000 development episodes using seed 99173, using that set only to select schedules. Five independent held-out seeds (101, 202, 303, 404, 505) each generate 3,000 test episodes, totaling 15,000. Every case has a stable unique identifier. Test data never enter the checkpoint optimization. The generator records the context, intended state parameters, injected fault type, source stage, deadline, and a fixed recovery variate. These values are shared across all evaluated methods.
+
+Environment execution used Python 3.13.5, NumPy 2.3.5, pandas 2.2.3 and matplotlib 3.10.8 on a CPU-based Linux runtime. No GPU, pretrained weights, external dataset or remote service was needed. The source tree contains the generator, verifier implementations, experiment runner, evaluator, notebook, frozen configuration, exact result CSVs, plots and console logs. The reproducibility commands are `python -m unittest discover -s tests -v', `python scripts/run\_experiments.py' and `python scripts/evaluate.py'.
+
+We performed five executed unit tests for clean cases, injected-fault schema preservation, complementary validator scope, repair/deadline behavior, and deterministic generation. The no-checkpoint baseline has a useful analytical sanity property: when every injected fault eventually reaches its deadline and no other errors exist, its unsafe frequency should equal the sampled fault prevalence. In the held-out set there are 8,985 faulty cases among 15,000, yielding exactly 59.90\%, matching the measured no-checkpoint rate. This does \emph{not} validate the fault distribution's realism; it validates that the implemented control behaves as specified.
+
+The evaluation script checks that each method has one record per case, no missing outcomes, no duplicated `(case ID, method)' entries, mutually exclusive terminal outcomes, detected errors only for faulty cases, and zero overlap between development and test IDs. The first evaluation attempt failed because pandas treated the intentionally blank checkpoint-position field for the \emph{none} policy as missing. We fixed only that CSV representation before the global null check and reran the evaluator; the original simulated trial outputs were unchanged. This authentic debugging incident is described in `logs/debugging.md'.
+
+\section{Results}
+\subsection{Measured main comparison}
+The development-only optimizer selected $\{2,4,6\}$ for the global policy. Surprisingly, running the optimizer separately on the retrieval-heavy and execution-heavy development subsets also selected $\{2,4,6\}$ in both cases. All final percentages below are from held-out trial records, not manually constructed examples.
+
+\begin{table}[t]
+\caption{Actual held-out evaluation on 15,000 paired synthetic cases. Unsafe, success and detection columns are percentages; cost is abstract units per case.}
+\label{tab:main}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{lrrrr}
+\toprule
+Policy & Unsafe $\downarrow$ & Success $\uparrow$ & Detect $\uparrow$ & Cost $\downarrow$\\
+\midrule
+No checks & \resNoneUnsafe & \resNoneSuccess & \resNoneDetection & \resNoneCost\\
+Final only & \resFinalOnlyUnsafe & \resFinalOnlySuccess & \resFinalOnlyDetection & \resFinalOnlyCost\\
+Periodic & \resPeriodicUnsafe & \resPeriodicSuccess & \resPeriodicDetection & \resPeriodicCost\\
+Global risk & \resGlobalRiskUnsafe & \resGlobalRiskSuccess & \resGlobalRiskDetection & \resGlobalRiskCost\\
+Adaptive & \resProfileAdaptiveUnsafe & \resProfileAdaptiveSuccess & \resProfileAdaptiveDetection & \resProfileAdaptiveCost\\
+Rule only$^*$ & \resAdaptiveRuleOnlyUnsafe & \resAdaptiveRuleOnlySuccess & \resAdaptiveRuleOnlyDetection & \resAdaptiveRuleOnlyCost\\
+Evidence only$^*$ & \resAdaptiveEvidenceOnlyUnsafe & \resAdaptiveEvidenceOnlySuccess & \resAdaptiveEvidenceOnlyDetection & \resAdaptiveEvidenceOnlyCost\\
+\bottomrule
+\multicolumn{5}{l}{\scriptsize $^*$ Same selected positions as adaptive; checker ablation.}
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:main} shows an unsafe frequency of \resPeriodicUnsafe\% for periodic checkpoints and \resGlobalRiskUnsafe\% for global risk placement. The paired difference (periodic minus selected) is \resPairedDelta{} percentage points, with a case-bootstrap interval of [\resPairedLo, \resPairedHi] percentage points. At the same nominal three-position budget, the selected policy also has slightly lower observed mean checking cost (\resGlobalRiskCost{} instead of \resPeriodicCost{} abstract units); this cost observation follows the early-termination convention and must not be interpreted as measured computational latency. Both the global and context-adaptive variants achieve a \resProfileAdaptiveSuccess\% task-success rate and \resProfileAdaptiveAbort\% safe-abort rate.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/unsafe_outcomes.pdf}
+\caption{Unsafe terminal outcomes on the held-out synthetic cases. Error bars are omitted because the paired interval is reported numerically in the text. Adaptive and global schedules tie exactly.}
+\label{fig:unsafe}
+\end{figure}
+
+The no-checkpoint rate of \resNoneUnsafe\% is the expected reference given this sample's injection frequency. The final-only rate of \resFinalOnlyUnsafe\% indicates that an end gate cannot intercept many earlier errors before the imposed deadline. Neither comparison implies a particular production failure rate. The periodic strategy detects \resPeriodicDetection\% of injected faults, compared with \resGlobalRiskDetection\% for the optimized global strategy, consistent with the reduction in unsafe outcomes.
+
+\subsection{Negative result: context adaptation}
+Under the frozen parameters both risk contexts choose identical positions, so the context-adaptive schedule is exactly equal to the global schedule in the held-out experiment. Consequently, it offers \emph{zero} improvement, not merely a small or uncertain improvement. The paired unsafe-rate difference is 0.00 percentage points; the resulting resampling interval is also [0,0] because the two policies generate the same decision for every test case. This is a structural equality, not evidence that context never matters in realistic systems. The routing-noise analysis intentionally flips the policy's context label at probabilities 0, 0.25, 0.5 and 1.0. It leaves the outcome rate constant at \resProfileAdaptiveUnsafe\% precisely because both contexts route to the same positions. Figure~\ref{fig:routing} records this otherwise easy-to-overlook negative result.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/routing_sensitivity.pdf}
+\caption{Misrouting the adaptive context does not change outcomes: both learned context schedules are identical. This plot is a negative control, not a robustness guarantee.}
+\label{fig:routing}
+\end{figure}
+
+\subsection{Paired error-trace inspection}
+The trial-level records permit an additional failure-mode audit that an aggregate accuracy number would conceal. There are 1,243 held-out episodes on which periodic checking has an unsafe outcome and the global risk policy does not, but 804 episodes show the reverse. Their difference, 439 cases out of 15,000, exactly accounts for the measured 2.93-percentage-point net reduction. Thus the optimized policy does not dominate the periodic schedule on every individual case; it simply prevents more errors under the stipulated mixture.
+
+One concrete trajectory is test case \texttt{test-101-00003}: a retrieval-heavy task receives a semantically incompatible SKU at stage 2, with a consequence deadline at that same stage. The periodic schedule checks at stages 1, 3 and 5, so the next scheduled check is too late. The optimized schedule checks at stage 2, detects the faulty catalog identity and successfully restores the clean state. Conversely, case \texttt{test-101-00002} has an authorization corruption at stage 0 and a deadline at stage 1. Periodic checking detects and repairs it at stage 1, while the selected schedule's first checkpoint at stage 2 misses the deadline. Both examples were selected from the actual stored rows, not manufactured to illustrate an algorithm. These cases also show why the objective cannot be interpreted as eliminating all silent failures.
+
+This asymmetric gain/loss pattern follows the assumed error locations and deadlines. It does not show the same pattern would occur for real agent failures, where errors may be compound, evidence may be stale and a checker may require a tool call that itself fails. Nonetheless, it demonstrates a useful audit approach: report which exact cases are rescued, which become worse, and the first stage at which their trajectories diverge.
+
+\subsection{Failure sensitivity by the stage of corruption}
+Figure~\ref{fig:stage} stratifies faults according to the first corrupted stage. The chart is conditional on a fault being injected at each stage, rather than on all episodes; therefore its percentages need not sum to the global unsafe frequency. It provides a direct explanation for the placement trade-off. In the frozen test set, 2,262 faults occur at retrieval stage 2, 1,887 at tool-result stage 4, and 655 at pre-action stage 6. These stages coincide with the risk-selected checkpoint positions. Among stage-2 faults, the periodic schedule has a 14.15\% unsafe frequency and the selected schedule has 0\% under the model; among stage-4 faults the corresponding frequencies are 14.20\% and 0\%; and at stage 6 the periodic policy misses all 655 faults because no checkpoint remains, whereas the risk-selected policy catches them.
+
+The opposite occurs at other stages. For 458 faults introduced at intent stage 0, periodic checking produces 12.66\% unsafe outcomes, but the selected schedule produces 70.09\%: its first check is delayed to stage 2 and misses many short consequence windows. Faults at stage 3 and stage 5 are also captured more reliably by the periodic schedule, with 0\% unsafe outcomes in each group, while the global selected policy records 13.75\% and 15.41\%, respectively. These measured trade-offs explain why the optimized policy succeeds on the stated stage-frequency mixture but cannot be presumed superior under a different distribution. The analysis is valuable even though the error mechanisms are synthetic: it explicitly reveals whom each policy helps and whom it fails.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/stage_failure_analysis.pdf}
+\caption{Conditional unsafe frequency stratified by injected fault stage. The gap reverses across stages, so the global aggregate result depends on the specified fault mixture.}
+\label{fig:stage}
+\end{figure}
+
+\subsection{Verifier ablations and nominal cost}
+The same $\{2,4,6\}$ positions have much higher unsafe rates when one of the feature-specific validators is removed. Rule-only checking yields \resAdaptiveRuleOnlyUnsafe\% unsafe outcomes; evidence-only yields \resAdaptiveEvidenceOnlyUnsafe\%, against \resGlobalRiskUnsafe\% for the heterogeneous conjunction. The underlying effect is explainable directly from the program: a rule checker cannot distinguish the authorized SKU or provenance token, whereas the evidence checker cannot enforce price, requested quantity, destination or authorization. The measured result therefore demonstrates complementary \emph{coverage under the chosen fault family}, not empirically estimated independence between real error detectors. A realistic ensemble could be less effective if its evidence or specifications are wrong.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/cost_tradeoff.pdf}
+\caption{Observed abstract verification-cost versus unsafe-outcome frequency. Check costs are assigned by the model (1.0 or 1.5 units per invocation), and early termination affects realized means.}
+\label{fig:cost}
+\end{figure}
+
+The heterogeneous policy needs more checking effort than either single-mechanism ablation, as Fig.~\ref{fig:cost} makes explicit. The comparison is informative only within the simulator's cost model; a different relative rule/evidence cost could change the preferred design. A resource-aware practical controller would additionally count real tool calls, model tokens, wall time, human escalation and the direct cost of unsafe actions.
+
+\section{Interpretation and Threats to Validity}
+\subsection{What the observations support}
+RQ1 receives conditional support: on this fixed generator, development-selected placement produces fewer unsafe outcomes than uncalibrated periodic checking. The evidence is paired and traceable to saved test-case IDs, with no held-out selection of positions. However, choosing an optimizer from the same simulator and testing on new samples from its distribution is not the same as demonstrating transferable performance across realistic agent environments. It shows an internal-design effect under explicit assumptions. A different fault mix could reverse the result.
+
+RQ2 receives a negative answer in the current design. Even though the two contexts have different stage-risk distributions, the permitted checkpoint positions and deadline structure make $\{2,4,6\}$ the chosen schedule for both. The supposed ability of a controller to adapt does not automatically yield a different policy. A genuine context benefit must be measured rather than inferred from a label such as ``dynamic'' or ``risk-aware.'' In future studies the candidate cost, profile observability, faults and deadlines could legitimately be varied in a fresh predeclared protocol; they should not be tuned retroactively to rescue this null result.
+
+RQ3 is supported only as a coverage demonstration: heterogeneous checks protect against more syntactically valid fault families than either checker alone. Because the answer is partly implied by the construction of the complementary validators, it should not be advertised as a discovered property of real-world models. The value of the experiment lies in making the effect, its cost and its limits explicit, and providing a reproducible unit-level control for richer subsequent tests.
+
+\subsection{Internal validity}
+The code intentionally generates at most one fault per episode, so causal attribution is trivial and interactions between faults cannot be studied. Recovery is sampled once per case with a fixed 90\% threshold, an assumed parameter rather than a property observed in actual agents. Fault windows are short (zero, one or two stages). They create a deliberate penalty for checking only at completion, but should not be mistaken for observed irreversible action timings. The evidence source is perfect by construction. The experiment therefore omits corrupted ground truth, correlated verifier errors, false positives, specification ambiguity and adversarial adaptation.
+
+Another limitation is that the optimization enumerates all 35 three-stage subsets on one development distribution and measures policies on a test sample generated by the same code. The disjoint IDs prevent direct sample leakage but do not independently validate the generator, the researcher-defined risk profiles or the choice of checkpoint budget. Bootstrap intervals quantify random case sampling for this fixed setup; they cannot account for uncertainty in the scenario model. Any statement about production risk, legal safety or human-level reliability would exceed the evidence.
+
+\subsection{Construct and external validity}
+The simulated ``agent'' is a structured state machine rather than a generative language model with tools, so natural-language interpretation, retrieval quality and long-horizon reasoning do not occur. Likewise, semantic correctness is defined by simple exact predicates, unlike open-ended objectives. The benchmark exercises the checkpoint-control mechanism but not the hardest questions raised by real agentic systems. Its unsafe endpoint is an abstract counter, not an actual harmful action. No external dataset, human assessment or API run was used.
+
+The cost analysis is also intentionally schematic. A unit assigned to a rule evaluation is not a second, dollar amount or energy cost. Since failing episodes may stop sooner and incur fewer checks, an apparent lower mean cost may reflect early termination rather than architectural efficiency. A future decision study should compare methods at measured common wall-clock, token or monetary budgets and include safe-abort utility. Lastly, the exact research novelty of this set of comparisons has not been established by an exhaustive scholarly search. We claim a reproducible course-level investigation, not a newly invented general-purpose method.
+
+\section{Reproducibility, Accountability and Future Work}
+All reported percentages, result tables and figures were produced by running the included Python scripts. The repository records the frozen config, test IDs, seeds, individual cases, all seven per-policy outcomes, summary tables, a paired-bootstrap JSON file and real console logs. The five tests exercise clean data, each fault category, verifier scope, deadlines, failure of repair and deterministic generation. Code and setup instructions are included with the paper. Files in the submission allow a reviewer to rerun the comparison without model API accounts or private data.
+
+The AI-assisted coding process also left an auditable correction. The evaluator initially rejected the empty checkpoint string associated with the no-checkpoint control when pandas parsed that legitimate blank cell as a null. After narrowing the correction to the schedule column, the remaining completeness checks passed and generated the final figures. That observation is documented; no unseen debugging sessions, fabricated code commits or independent student verification is claimed. The project repository is a local snapshot and is not represented as an uploaded GitHub repository.
+
+Three extensions would add the most information. First, replace the synthetic state machine with a small real tool-using agent and an independently annotated consequence trace, then compare the same schedules without reusing held-out outcomes for selection. Second, introduce noisy, correlated and conflicting evidence verifiers to measure both false rejections and missed errors. Third, measure real latency and cost under multiple simultaneous faults, explicit recovery attempts and irreversible external actions. These additions are needed before interpreting checkpoint placement as a dependable deployment recommendation.
+
+\section{Conclusion}
+A checkpoint system should be judged not only by whether execution terminates but also by whether incorrect intermediate states are detected before they become consequential. We implemented a reproducible controlled experiment motivated by the uploaded paper's proposals for risk-sensitive placement and silent-error metrics. In 15,000 held-out synthetic cases, development-selected three-position checking reduced unsafe outcomes from \resPeriodicUnsafe\% under periodic checking to \resGlobalRiskUnsafe\%, while context-specific scheduling did not improve on the global policy. Complementary rule and evidence checks covered different semantic fault families, at a higher assigned verification cost. The results illustrate a bounded systems-design trade-off under explicitly artificial conditions; they do not demonstrate reliability gains in live LLM agents. The most important next step is independent evaluation under real agent traces, noisy verifiers and measured deployment costs.
+
+\begin{thebibliography}{99}
+\bibitem{agrawal2026survey} K.~Agrawal, ``Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines,'' unpublished course manuscript, MCL2026004, Sep. 2026, supplied PDF.
+\bibitem{agrawal2026review} K.~Agrawal, ``Designing Verification Checkpoints to Mitigate Silent Errors in Agentic AI Pipelines,'' prior course literature review, MCL2026004, supplied PDF, 2026.
+\bibitem{yao2023react} S.~Yao \emph{et al.}, ``ReAct: Synergizing Reasoning and Acting in Language Models,'' in \emph{ICLR}, 2023. [Online]. Available: \url{https://openreview.net/pdf?id=WE_vluYUL-X}
+\bibitem{liu2024agentbench} X.~Liu \emph{et al.}, ``AgentBench: Evaluating LLMs as Agents,'' in \emph{ICLR}, 2024. [Online]. Available: \url{https://proceedings.iclr.cc/paper_files/paper/2024/hash/e9df36b21ff4ee211a8b71ee8b7e9f57-Abstract-Conference.html}
+\bibitem{zhou2024webarena} S.~Zhou \emph{et al.}, ``WebArena: A Realistic Web Environment for Building Autonomous Agents,'' in \emph{ICLR}, 2024. [Online]. Available: \url{https://proceedings.iclr.cc/paper_files/paper/2024/hash/4410c0711e9154a7a2d26f9b3816d1ef-Abstract-Conference.html}
+\bibitem{lightman2024verify} H.~Lightman \emph{et al.}, ``Let's Verify Step by Step,'' in \emph{ICLR}, 2024. [Online]. Available: \url{https://proceedings.iclr.cc/paper_files/paper/2024/hash/aca97732e30bcf1303bc22ac3924fd16-Abstract-Conference.html}
+\bibitem{ruan2024toolemu} Y.~Ruan \emph{et al.}, ``Identifying the Risks of LM Agents with an LM-Emulated Sandbox,'' in \emph{ICLR}, 2024. [Online]. Available: \url{https://proceedings.iclr.cc/paper_files/paper/2024/hash/7274ed909a312d4d869cc328ad1c5f04-Abstract-Conference.html}
+\bibitem{jimenez2024swe} C.~E.~Jimenez \emph{et al.}, ``SWE-bench: Can Language Models Resolve Real-world Github Issues?'' in \emph{ICLR}, 2024. [Online]. Available: \url{https://proceedings.iclr.cc/paper_files/paper/2024/hash/edac78c3e300629acfe6cbe9ca88fb84-Abstract-Conference.html}
+\bibitem{tan2025consistent} H.~Tan \emph{et al.}, ``Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs,'' in \emph{EMNLP}, 2025, pp.~4755--4765, doi: 10.18653/v1/2025.emnlp-main.238.
+\end{thebibliography}
+\end{document}

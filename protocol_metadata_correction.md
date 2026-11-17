@@ -1,0 +1,3 @@
+# Non-substantive configuration-key correction after initial execution
+
+The initial machine-readable config used the misleading key `dev_cases_per_profile: 2500` while the runner actually generated 5,000 total development cases and assigned profiles randomly. We changed this label to `dev_cases_total: 5000` and replaced the corresponding runner expression without changing any random seeds, draws, samples, checkpoint positions, test cases, metrics, or protocol. The full experiment and evaluation were then rerun and validated to reproduce the same results. This is a documentation/metadata correction, **not** tuning of an experimental parameter after inspecting the test data.
